@@ -93,7 +93,15 @@ export class GenerateResumeComponent implements OnInit {
       description: 'Quando fazemos algo com o ❤️, o trabalho se torna arte!',
       cover: 'assets/artistico.jpg',
     },
-  ]
+  ];
+
+  customThemeHTML: { id: number; body: string; title: string; description: string; cover: Blob | string } = {
+    id: 999,
+    body: '',
+    title: '',
+    description: 'Um tema incrível desenvolvido por uma pessoa fantástica: você!',
+    cover: '',
+  };
 
   constructor(
     private fb: FormBuilder,
@@ -171,6 +179,7 @@ export class GenerateResumeComponent implements OnInit {
         }),
       ]),
       theme: [1],
+      customTheme: [null],
     });
   }
 
@@ -275,18 +284,30 @@ export class GenerateResumeComponent implements OnInit {
   fileList: NzUploadFile[] = [];
 
   beforeThemeUpload = (file: NzUploadFile): boolean => {
-    // this.fileList = [];
-    // this.fileList = this.fileList.concat(file);
+    if (file.type !== 'text/html') {
+      alert('só html');
+      return false;
+    }
 
     this.fileList = [file];
-    const myReader = new FileReader();
-    myReader.readAsDataURL(file as any);
-    myReader.onloadend = (e) => {
-      console.log(myReader.result); // aqui ja tenho o blob "abrivel" no browser, agora preciso descobrir como fazer pra renderizar esse cara no meu site
+    this.customThemeHTML.title = <string>file.name?.replace('.html', '');
+    this.customThemeHTML.cover = 'https://via.placeholder.com/890x1190';
+
+    const reader = new FileReader();
+    reader.readAsText(file as any);
+    reader.onloadend = () => {
+      this.customThemeHTML.body = <string>reader.result;
     };
 
+    this.resumeForm.get('theme')?.setValue(this.customThemeHTML.id);
+    this.resumeForm.get('customTheme')?.setValue(this.customThemeHTML);
+
     return false;
-  };
+  }
+
+  showThemeKeysModal(): void {
+
+  }
 
   generateResume(): void {
     if (this.resumeForm.valid) {

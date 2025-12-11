@@ -5,3 +5,5 @@
 </nz-breadcrumb>
 
 <app-minimalist *ngIf="resume.theme === 1" [resume]="resume"></app-minimalist>
+
+<div *ngIf="resume.customTheme.body" [innerHTML]="resume.customTheme.body"></div>

@@ -625,20 +625,38 @@
       </ng-template>
     </div>
 
-    <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="6">
-      <nz-upload nzType="drag" [nzMultiple]="false" [(nzFileList)]="fileList" [nzBeforeUpload]="beforeThemeUpload">
+    <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="6" *ngIf="customThemeHTML.body === ''; else customTheme"
+      class="custom-theme-card">
+      <nz-upload nzType="drag" [nzMultiple]="false" [(nzFileList)]="fileList" [nzAccept]="'.html'"
+        [nzBeforeUpload]="beforeThemeUpload">
         <p class="ant-upload-drag-icon">
           <i nz-icon nzType="inbox"></i>
         </p>
 
-        <p class="ant-upload-text">Click or drag file to this area to upload</p>
+        <p class="ant-upload-text">Clique ou arraste seu arquivo HTML aqui</p>
 
         <p class="ant-upload-hint">
-          Support for a single or bulk upload. Strictly prohibit from uploading company data or other band files
+          O arquivo deve ter as chaves definidas corretamente para serem renderizadas. Veja quais são elas
+          <a (click)="showThemeKeysModal()">aqui</a>.
         </p>
       </nz-upload>
     </div>
   </div>
+
+  <ng-template #customTheme>
+    <div nz-row [nzGutter]="8">
+      <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="6">
+        <nz-card nzHoverable style="width:240px" [nzCover]="customCoverTemplate"
+          [ngClass]="{ 'card-selected': resumeForm.get('theme')?.value === customThemeHTML.id }" class="theme-card">
+          <nz-card-meta [nzTitle]="customThemeHTML.title" [nzDescription]="customThemeHTML.description"></nz-card-meta>
+        </nz-card>
+
+        <ng-template #customCoverTemplate>
+          <img [alt]="customThemeHTML.description" [src]="customThemeHTML.cover" />
+        </ng-template>
+      </div>
+    </div>
+  </ng-template>
 
   <nz-divider class="divider"></nz-divider>
 
